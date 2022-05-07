@@ -112,11 +112,11 @@ contract RockPaperScissors is Ownable {
         increaseBalance(game.challenger, game.wager);
       }
 
-      revert(); // Ends the parent function without continuing (uses the same opcode as require())
+      revert(); 
     }
 
     else {
-      _; // If the game is not expired, carry on
+      _; 
     }
   }
 
@@ -142,8 +142,8 @@ contract RockPaperScissors is Ownable {
   function createGame(bytes32 _encryptedMove, uint _wager) public checkIfPaused() {
     require(balances[msg.sender] >= _wager);
     decreaseBalance(msg.sender, _wager);
-    gameIdCounter = gameIdCounter.add(1); // The first game's ID will be 1
-    games[gameIdCounter] = Game({ // create a new game
+    gameIdCounter = gameIdCounter.add(1); 
+    games[gameIdCounter] = Game({ 
       gameId: gameIdCounter,
       wager: _wager,
       gameExpirationBlock: 0,
@@ -203,7 +203,7 @@ contract RockPaperScissors is Ownable {
       game.challengerMove = _move;
       game.status = Status.AwaitingCreatorReveal;
       emitGameUpdates(game.gameId);
-    } else { // Return the poor stranger his/her remaining gas
+    } else { 
       revert();
     }
 
@@ -228,13 +228,13 @@ contract RockPaperScissors is Ownable {
       increaseBalance(game.challenger, game.wager);
     } else if (keccak256(moveWinsAgainst[game.creatorMove]) == keccak256(game.challengerMove)) { 
       game.winner = game.challenger;
-      transferOwner(tip); //get 2% tip
+      transferOwner(tip); 
       increaseBalance(game.winner, totalPrizePool);
     } else if (keccak256(moveWinsAgainst[game.challengerMove]) == keccak256(game.creatorMove)) { 
       game.winner = game.creator;
-      transferOwner(tip); //get 2% tip
+      transferOwner(tip); 
       increaseBalance(game.winner, totalPrizePool);
-    } else { // Fallback, refund any remaining gas
+    } else { 
       revert();
     }
     game.status = Status.Finished;
