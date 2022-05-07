@@ -11,7 +11,7 @@ contract RockPaperScissors is Ownable {
   uint public gameIdCounter = 0;
   uint public minimumWager;
   uint public gameBlockTimeLimit;
-  bytes32 internal emptyStringHash = keccak256(''); // Needed for string comparisons
+  bytes32 internal emptyStringHash = keccak256(''); 
   uint public tip_rate = 20000000000000000; //0.02 eth
   mapping (address => uint) public balances;
 
@@ -58,7 +58,7 @@ contract RockPaperScissors is Ownable {
 
   constructor() public {
     minimumWager = 200000000000000; // .02 ETH
-    gameBlockTimeLimit = 5760; // Roughly 24 hours @ a 15 second blocktime
+    gameBlockTimeLimit = 5760; 
     seedMoveWinsAgainst();
   }
 
@@ -143,7 +143,7 @@ contract RockPaperScissors is Ownable {
     require(balances[msg.sender] >= _wager);
     decreaseBalance(msg.sender, _wager);
     gameIdCounter = gameIdCounter.add(1); // The first game's ID will be 1
-    games[gameIdCounter] = Game({ // Create a new game
+    games[gameIdCounter] = Game({ // create a new game
       gameId: gameIdCounter,
       wager: _wager,
       gameExpirationBlock: 0,
