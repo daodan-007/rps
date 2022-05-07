@@ -150,7 +150,7 @@ contract RockPaperScissors is Ownable {
       creator: msg.sender,
       challenger: 0x0,
       winner: 0x0,
-      creatorEncryptedMove: _encryptedMove, // Encrypted using the user's address and hashed password
+      creatorEncryptedMove: _encryptedMove, 
       challengerEncryptedMove: emptyStringHash,
       creatorMove: '',
       challengerMove: '',
@@ -167,13 +167,13 @@ contract RockPaperScissors is Ownable {
     );
     game.status = Status.Cancelled;
     emitGameUpdates(game.gameId);
-    increaseBalance(game.creator, game.wager); /// @dev Called after state changes to prevent recursive call attacks
+    increaseBalance(game.creator, game.wager); 
   }
 
   function joinGame(bytes32 _encryptedMove, uint _gameId) public checkIfPaused() {
-    Game storage game = games[_gameId]; // Too bad Solidity doesn't let you define local variables in function arguments like JavaScript
+    Game storage game = games[_gameId]; 
     require(
-      game.creator != msg.sender && // You can't challange yourself
+      game.creator != msg.sender && 
       game.status == Status.Open &&
       balances[msg.sender] >= game.wager
     );
@@ -181,7 +181,7 @@ contract RockPaperScissors is Ownable {
     game.status = Status.AwaitingReveals;
     game.challenger = msg.sender;
     game.gameExpirationBlock = block.number.add(gameBlockTimeLimit);
-    game.challengerEncryptedMove = _encryptedMove; // Encrypted using the user's address and hashed password
+    game.challengerEncryptedMove = _encryptedMove; 
     emitGameUpdates(game.gameId);
   }
 
@@ -193,12 +193,12 @@ contract RockPaperScissors is Ownable {
       game.status == Status.AwaitingChallengerReveal
     );
 
-    if (msg.sender == game.creator) { // If the creator reveals
+    if (msg.sender == game.creator) { 
       require(game.creatorEncryptedMove == keccak256(_move, msg.sender, _passwordHash));
       game.creatorMove = _move;
       game.status = Status.AwaitingChallengerReveal;
       emitGameUpdates(game.gameId);
-    } else if (msg.sender == game.challenger) { // If the challenger reveals
+    } else if (msg.sender == game.challenger) { 
       require(game.challengerEncryptedMove == keccak256(_move, msg.sender, _passwordHash));
       game.challengerMove = _move;
       game.status = Status.AwaitingCreatorReveal;
@@ -223,14 +223,14 @@ contract RockPaperScissors is Ownable {
       keccak256(game.challengerMove) != emptyStringHash
     );
 
-    if (keccak256(game.creatorMove) == keccak256(game.challengerMove)) { // If players tie, refund both players
+    if (keccak256(game.creatorMove) == keccak256(game.challengerMove)) { 
       increaseBalance(game.creator, game.wager);
       increaseBalance(game.challenger, game.wager);
-    } else if (keccak256(moveWinsAgainst[game.creatorMove]) == keccak256(game.challengerMove)) { // The challenger wins
+    } else if (keccak256(moveWinsAgainst[game.creatorMove]) == keccak256(game.challengerMove)) { 
       game.winner = game.challenger;
       transferOwner(tip); //get 2% tip
       increaseBalance(game.winner, totalPrizePool);
-    } else if (keccak256(moveWinsAgainst[game.challengerMove]) == keccak256(game.creatorMove)) { // The creator wins
+    } else if (keccak256(moveWinsAgainst[game.challengerMove]) == keccak256(game.creatorMove)) { 
       game.winner = game.creator;
       transferOwner(tip); //get 2% tip
       increaseBalance(game.winner, totalPrizePool);
